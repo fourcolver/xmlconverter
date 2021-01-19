@@ -16,17 +16,17 @@ if(isset($_POST['parse']) && isset($_POST['url'])) {
   //   echo "false"; exit();
 	// }
 
-	try
-	{
-		$h = fopen($url_real, 'r');
-		$first5000Bytes = fread($h, 20000);
-		fclose($h);
-	}
-	catch(\Exception $e)
-	{
-		echo "false"; exit();
-	}
-	var_dump($first5000Bytes); exit;
+	// try
+	// {
+	// 	$h = fopen($url_real, 'r');
+	// 	$first5000Bytes = fread($h, 5000);
+	// 	fclose($h);
+	// }
+	// catch(\Exception $e)
+	// {
+	// 	echo "false"; exit();
+	// }
+	// var_dump($first5000Bytes); exit;
 
 	$reader = new XMLReader();
 
@@ -34,7 +34,7 @@ if(isset($_POST['parse']) && isset($_POST['url'])) {
 		$i = 0;
 		while($reader->read()) {
 			if($reader->nodeType == XMLReader::ELEMENT) $nodeName = $reader->name;
-			if($nodeName === "job" || $nodeName === "JOB" || $nodeName === "ad" || $nodeName == "item" || $nodeName == "vacancy") {
+			if($nodeName === "job" || $nodeName === "JOB" || $nodeName === "ad" || $nodeName == "item" || $nodeName == "vacancy" || $nodeName == "Job") {
 				$baseTag = [];
 				$baseValue = [];
 				$cdataTag = [];
@@ -147,13 +147,18 @@ if(isset($_POST['saveFeed'])) {
 	$basetag = $_POST['basetag'];
 	$updatetag = $_POST['updatetag'];
 	$cdatatag = $_POST['cdatatag'];
-	$crudResult = $crud->create($name, $xmlurl, $basetag, $updatetag, $cdatatag);
+	$willAddCountry = $_POST['willAddCountry'];
+	$jobLocationType = $_POST['jobLocationType'];
+	$defaultCountry = ($willAddCountry == "invalid") ? null : $willAddCountry;
+	$joblocationtype = ($jobLocationType == "invalid") ? null : $jobLocationType;
+	$crudResult = $crud->create($name, $xmlurl, $basetag, $updatetag, $cdatatag, $defaultCountry, $joblocationtype);
 	if($crudResult == true) {
-		echo "true"; exit();
+		$res = json_encode(['data' => "true"]);
 	}
 	else {
-		echo "false"; exit();
+		$res = json_encode(['data' => "false"]);
 	}
+	echo $res; exit();
 }
 
 // Remove XML information
@@ -185,13 +190,20 @@ if(isset($_POST["runningItem"])) {
 if(isset($_POST['updateFeed'])) {
 	$id = $_POST['id'];
 	$name = $_POST['feedName'];
-	// $xmlurl = $_POST['xmlurl'];
 	$updatetag = $_POST['updatetag'];
 	$xmlurl = $_POST['xmlurl'];
-	$crudResult = $crud->update($id, $name, $updatetag, $xmlurl);
+	$willAddCountry = $_POST['willAddCountry'];
+	$jobLocationType = $_POST['jobLocationType'];
+	$defaultCountry = ($willAddCountry == "invalid") ? null : $willAddCountry;
+	$joblocationtype = ($jobLocationType == "invalid") ? null : $jobLocationType;
+	$crudResult = $crud->update($id, $name, $updatetag, $xmlurl, $defaultCountry, $joblocationtype);
 	if($crudResult == true) {
-		echo "true"; exit();
+		$res = json_encode(['data' => "true"]);
 	}
+	else {
+		$res = json_encode(['data' => "false"]);
+	}
+	echo $res; exit();
 }
 
 ?>

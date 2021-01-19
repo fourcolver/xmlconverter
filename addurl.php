@@ -81,8 +81,7 @@
                                                     <button class="btn btn-default btn-lg" type="button"  id="parseXML" type="button"> <i class="fas fa-plus-circle mr-1"></i>
                                                     </button>
                                                   </div>
-                                                </div>
-                                     
+                                                </div>                                     
                                             </div>
 
                                             <div class="col-lg-2 offset-lg-1  col-sm-12 mt-2 mb-2">
@@ -90,6 +89,20 @@
                                                 <i class="fas fa-save mr-1"></i>
                                                 Saved
                                                   <i class="fas fa-check ml-1"></i></button>
+                                            </div>
+                                            <div class="col-lg-6 px-sm-1 col-sm-12 mt-2 mb-2 check-label">
+                                                <label style="width: 350px; margin-left: 25px;" class="form-check-label" for="willCountryCheck">Will add addressCountry tag?</label>
+                                                <input style="height: 30px;" type="checkbox" class="form-control form-control-lg"  id="willCountryCheck" name="willCountryCheck"> 
+                                            </div>
+                                            <div class="col-lg-4 px-sm-1 col-sm-12 mt-2 mb-2">
+                                                <input type="text" class="form-control form-control-lg" id="willAddCountry" name="willAddCountry" placeholder="Add Country Value">
+                                            </div>
+                                            <div class="col-lg-6 px-sm-1 col-sm-12 mt-2 mb-2 check-label">
+                                                <label style="width: 350px; margin-left: 25px;" class="form-check-label" for="willLocationCheck">Will add jobLocationType tag?</label>
+                                                <input style="height: 30px;" type="checkbox" class="form-control form-control-lg"  id="willLocationCheck" name="willLocationCheck"> 
+                                            </div>
+                                            <div class="col-lg-4 px-sm-1 col-sm-12 mt-2 mb-2">
+                                                <input type="text" style="display: none;" class="form-control form-control-lg" id="jobLocationType" name="jobLocationType" value="TELECOMMUTE" readonly>
                                             </div>
                                         </div>
                                     </form>

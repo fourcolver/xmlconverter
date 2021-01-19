@@ -70,6 +70,16 @@ $(".confirmItem").click(function() {
 
 // update xml 
 $("#updateDetail").click(function(){
+    let willAddCountry = "invalid";
+    if ($('#willCountryCheck').is(":checked"))
+    {
+        willAddCountry = $('#willEditCountry').val();
+    }
+    let jobLocationType = "invalid";
+    if ($('#willLocationCheck').is(":checked"))
+    {
+        jobLocationType = $('#jobLocationType').val();
+    }
     let id = $("#xmlid").val();
     let feedName = $("#feedName").val();
     let xmlurl = $("#xmlurl").val();
@@ -77,7 +87,7 @@ $("#updateDetail").click(function(){
     $( "tbody#parsing input[type=radio][name^=tagRadio]:checked" ).each(function( index ) {
         updatetag += `${this.value},`;
     });
-    if(feedName == "" || xmlurl == "") {
+    if(feedName == "" || xmlurl == "" || willAddCountry == "") {
         alert("Fill form values");
     }
     else {
@@ -85,10 +95,10 @@ $("#updateDetail").click(function(){
             url: "parsexml.php",
             type: "post",
             dataType: "json",
-            data: {"updateFeed": "valid", "id": id, "feedName": feedName, "xmlurl": xmlurl, "updatetag": updatetag},
+            data: {"updateFeed": "valid", "id": id, "feedName": feedName, "xmlurl": xmlurl, "updatetag": updatetag, "willAddCountry": willAddCountry, "jobLocationType": jobLocationType},
             success: function(result) {
                 console.log(result);
-                if(result == true) {
+                if(result.data == "true") {
                     window.location.href = 'managefeeds.php';
                 }
                 else {
@@ -100,6 +110,17 @@ $("#updateDetail").click(function(){
 })
 
 $("#saveDetail").click(function(){
+    let willAddCountry = "invalid";
+    if ($('#willCountryCheck').is(":checked"))
+    {
+        willAddCountry = $('#willAddCountry').val();
+    }
+    let jobLocationType = "invalid";
+    if ($('#willLocationCheck').is(":checked"))
+    {
+        jobLocationType = $('#jobLocationType').val();
+    }
+    console.log(jobLocationType);
     let feedName = $('#feedName').val();
     let xmlurl = $('#xmlurlHidden').val();
     let basetag = $("#baseTagValue").val();
@@ -108,7 +129,7 @@ $("#saveDetail").click(function(){
     $( "tbody#parsing input[type=radio][name^=tagRadio]:checked" ).each(function( index ) {
         updatetag += `${this.value},`;
     });
-    if(feedName == "" || xmlurl == "") {
+    if(feedName == "" || xmlurl == "" || willAddCountry == "") {
         alert("Fill form values");
     }
     else {
@@ -116,10 +137,9 @@ $("#saveDetail").click(function(){
             url: "parsexml.php",
             type: "post",
             dataType: "json",
-            data: {"saveFeed": "valid", "feedName": feedName, "xmlurl": xmlurl, "basetag": basetag, "updatetag": updatetag, "cdatatag": cdatatag},
+            data: {"saveFeed": "valid", "feedName": feedName, "xmlurl": xmlurl, "basetag": basetag, "updatetag": updatetag, "cdatatag": cdatatag, "willAddCountry": willAddCountry, "jobLocationType": jobLocationType},
             success: function(result) {
-                console.log(result);
-                if(result == true) {
+                if(result.data == "true") {
                     window.location.href = 'managefeeds.php';
                 }
                 else {
@@ -130,6 +150,21 @@ $("#saveDetail").click(function(){
     }
 })
 
+
+//add country pre tag
+$("#willCountryCheck").click(function(){
+    $("#willAddCountry").toggle(200);
+})
+
+//update country pre tag
+$("#willCountryCheck").click(function(){
+    $("#willEditCountry").toggle(200);
+})
+
+//add jobLocation tag
+$("#willLocationCheck").click(function(){
+    $("#jobLocationType").toggle(200);
+})
 
 $(document).ready(function() {
     $('#feedinfo').DataTable({
@@ -233,9 +268,9 @@ $("#parseXML").click(function(){
                                                     </label>
                                                 </div>
                                                 <div class="form-check">
-                                                    <input class="form-check-input" type="radio" name="tagRadio_${i}" id="labelRadio_${i}_5" value="country">
+                                                    <input class="form-check-input" type="radio" name="tagRadio_${i}" id="labelRadio_${i}_5" value="addressCountry">
                                                     <label class="form-check-label" for="labelRadio_${i}_5">
-                                                    &lt;country&gt;
+                                                    &lt;addressCountry&gt;
                                                     </label>
                                                 </div>
                                                 <div class="form-check">

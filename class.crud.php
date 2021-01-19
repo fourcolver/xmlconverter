@@ -9,15 +9,15 @@ class crud
 		$this->db = $DB_con;
 	}
 	
-	public function create($name,$url,$basetag,$updatetag, $cdatatag)
+	public function create($name,$url,$basetag,$updatetag, $cdatatag, $defaultcountry, $joblocationtype)
 	{
 		$now = new DateTime();
 		$createdate = $now->format('Y-m-d H:i:s');
 		try
 		{
 			$stmt = $this->db->prepare(
-				"INSERT INTO feedinfo(name,url,basetag,updatetag,cdatatag,createdate,updatedate) 
-						VALUES(:name, :url, :basetag, :updatetag, :cdatatag, :createdate, :updatedate)");
+				"INSERT INTO feedinfo(name,url,basetag,updatetag,cdatatag,createdate,updatedate,defaultcountry,joblocationtype) 
+						VALUES(:name, :url, :basetag, :updatetag, :cdatatag, :createdate, :updatedate, :defaultcountry, :joblocationtype)");
 			$stmt->bindparam(":name",$name);
 			$stmt->bindparam(":url",$url);
 			$stmt->bindparam(":basetag",$basetag);
@@ -25,6 +25,8 @@ class crud
 			$stmt->bindparam(":cdatatag",$cdatatag);
 			$stmt->bindparam(":createdate",$createdate);
 			$stmt->bindparam(":updatedate",$createdate);
+			$stmt->bindparam(":defaultcountry",$defaultcountry);
+			$stmt->bindparam(":joblocationtype",$joblocationtype);
 			$stmt->execute();
 			return true;
 		}
@@ -53,7 +55,7 @@ class crud
 		return $feedAll;
 	}
 
-	public function update($id,$name,$updatetag,$xmlurl)
+	public function update($id,$name,$updatetag,$xmlurl,$defaultcountry,$joblocationtype)
 	{
 		$now = new DateTime();
 		$updateDate = $now->format('Y-m-d H:i:s');
@@ -61,15 +63,17 @@ class crud
 		{
 			$stmt=$this->db->prepare("UPDATE feedinfo SET name=:fname, 
 		                                               updatetag=:updatetag, updatedate=:updatedate,
-																									 url=:xmlurl
+																									 url=:xmlurl, defaultcountry=:defaultcountry, joblocationtype=:joblocationtype
 													WHERE id=:id ");
 			$stmt->bindparam(":fname",$name);
 			$stmt->bindparam(":updatedate",$updateDate);
 			$stmt->bindparam(":updatetag",$updatetag);
 			$stmt->bindparam(":id",$id);
 			$stmt->bindparam(":xmlurl",$xmlurl);
+			$stmt->bindparam(":defaultcountry",$defaultcountry);
+			$stmt->bindparam(":joblocationtype",$joblocationtype);
 			$stmt->execute();
-			return true;	
+			return true;
 		}
 		catch(PDOException $e)
 		{
@@ -162,12 +166,26 @@ class crud
 
 	public function setCheckToProgress($list) {
 		try{
-			$status = "Progressing";
 			$in  = str_repeat('?,', count($list) - 1) . '?';
 			$stmt = $this->db->prepare("UPDATE running SET status='Progressing'
 																	WHERE feedid IN ($in)");
-			$stmt->bindparam(":fname",$status);
 			$stmt->execute($list);
+			return true;
+		}
+		catch(PDOException $e)
+		{
+			echo $e->getMessage();	
+			return false;
+		}
+	}
+
+	public function modifyTag($willUpdateTag, $id) {
+		try{
+			$stmt = $this->db->prepare("UPDATE feedinfo SET updatetag=:updatetag
+																	WHERE id=:id");
+			$stmt->bindparam(":updatetag",$willUpdateTag);
+			$stmt->bindparam(":id",$id);
+			$stmt->execute();
 			return true;
 		}
 		catch(PDOException $e)
@@ -209,7 +227,7 @@ class crud
 								else {
 									echo "<td>Not Converted Yet</td>";
 								}
-							}							
+							}					
 						?>
 						<td>
 							<a href="edit-data.php?edit_id=<?php echo($row['id']); ?>" class="btn btn-default btn-sm mr-1"><i class="fas fa-pen"></i></a>
@@ -220,6 +238,6 @@ class crud
 					<?php
 			}
 		}
-	}	
+	}
 }
 ?>

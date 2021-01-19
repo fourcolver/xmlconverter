@@ -82,7 +82,7 @@ font-weight: 400;
 }
 }
 .dropdown-status-tag{
-	min-width:780px;
+	min-width:800px;
 }
 @media(min-width:0px) and (max-width:767px) {
 	.dropdown-status-tag{
@@ -134,4 +134,15 @@ body {
 
 .font-red {
 	color: red;
+}
+
+.check-label {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	padding-left: 15px;
+}
+
+#willAddCountry {
+	display: none;
 }

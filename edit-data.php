@@ -10,6 +10,8 @@
     $updatetag = $edit_infor['updatetag'];
     $updatetag = explode(",", $updatetag);
     array_pop($updatetag);
+    $willEditCountry = $edit_infor['defaultcountry'];
+    $jobLocationType = $edit_infor['joblocationtype'];
 ?>
     <body class="hold-transition sidebar-mini sidebar-collapse layout-fixed">
         <div class="wrapper">
@@ -85,7 +87,7 @@
                                             </div>
                                             <div class="col-lg-5 px-sm-1 col-sm-9 mt-2 mb-2">
                                                 <div class="input-group mb-0">
-                                                  <input type="text" class="form-control form-control-lg" id="xmlurl" placeholder="Add the url to map" value="<?php echo $edit_infor['url']; ?>" aria-label="Add url to map" aria-describedby="button-addon2">
+                                                  <input type="text" class="form-control form-control-lg" id="xmlurl" placeholder="Add the url to map" value="<?php echo $edit_infor['url']; ?>" aria-label="Add url to map" aria-describedby="button-addon2" readonly>
                                                   <!-- <div class="input-group-append">
                                                     <button class="btn btn-default btn-lg" type="button"  id="parseXML" type="button"> <i class="fas fa-plus-circle mr-1"></i>
                                                     </button>
@@ -99,6 +101,56 @@
                                                 Update
                                                   <i class="fas fa-check ml-1"></i></button>
                                             </div>
+                                            <?php
+                                                if(!empty($willEditCountry)) {
+                                            ?>
+                                                <div class="col-lg-6 px-sm-1 col-sm-12 mt-2 mb-2 check-label">
+                                                    <label style="width: 350px; margin-left: 25px;" class="form-check-label" for="willCountryCheck">Will add addressCountry tag?</label>
+                                                    <input style="height: 30px;" type="checkbox" checked class="form-control form-control-lg"  id="willCountryCheck" name="willCountryCheck"> 
+                                                </div>
+                                                <div class="col-lg-4 px-sm-1 col-sm-12 mt-2 mb-2">
+                                                    <input type="text" class="form-control form-control-lg" id="willEditCountry" name="willEditCountry" placeholder="Add Country Value" value="<?php echo $willEditCountry?>">
+                                                </div>
+                                            <?php
+                                                }
+                                                else {
+                                            ?>
+                                                <div class="col-lg-6 px-sm-1 col-sm-12 mt-2 mb-2 check-label">
+                                                    <label style="width: 350px; margin-left: 25px;" class="form-check-label" for="willCountryCheck">Will add addressCountry tag?</label>
+                                                    <input style="height: 30px;" type="checkbox" class="form-control form-control-lg"  id="willCountryCheck" name="willCountryCheck"> 
+                                                </div>
+                                                <div class="col-lg-4 px-sm-1 col-sm-12 mt-2 mb-2">
+                                                    <input type="text" class="form-control form-control-lg" style="display: none;" id="willEditCountry" name="willEditCountry" placeholder="Add Country Value" value="">
+                                                </div>
+                                            <?php
+                                                }
+                                            ?>
+
+                                            <?php
+                                                if(!empty($jobLocationType)) {
+                                            ?>
+                                                <div class="col-lg-6 px-sm-1 col-sm-12 mt-2 mb-2 check-label">
+                                                    <label style="width: 350px; margin-left: 25px;" class="form-check-label" for="willLocationCheck">Will add jobLocationType tag?</label>
+                                                    <input style="height: 30px;" type="checkbox" class="form-control form-control-lg" checked  id="willLocationCheck" name="willLocationCheck"> 
+                                                </div>
+                                                <div class="col-lg-4 px-sm-1 col-sm-12 mt-2 mb-2">
+                                                    <input type="text" class="form-control form-control-lg" id="jobLocationType" name="jobLocationType" value="TELECOMMUTE" readonly>
+                                                </div>
+                                            <?php
+                                                }
+                                                else {
+                                            ?>
+                                                <div class="col-lg-6 px-sm-1 col-sm-12 mt-2 mb-2 check-label">
+                                                    <label style="width: 350px; margin-left: 25px;" class="form-check-label" for="willLocationCheck">Will add jobLocationType tag?</label>
+                                                    <input style="height: 30px;" type="checkbox" class="form-control form-control-lg"  id="willLocationCheck" name="willLocationCheck"> 
+                                                </div>
+                                                <div class="col-lg-4 px-sm-1 col-sm-12 mt-2 mb-2">
+                                                    <input type="text" style="display: none;" class="form-control form-control-lg" id="jobLocationType" name="jobLocationType" value="TELECOMMUTE" readonly>
+                                                </div>
+                                            <?php
+                                                }
+                                            ?>
+                                            
                                         </div>
                                     </form>
                                 </div>
@@ -149,9 +201,9 @@
                                                                                 </label>
                                                                             </div>
                                                                             <div class="form-check">
-                                                                                <input class="form-check-input" type="radio" name="tagRadio_<?php echo $key; ?>" id="labelRadio_<?php echo $key; ?>_5" value="country" <?php echo ($updatetag[$key]=='country')?'checked':'' ?> >
+                                                                                <input class="form-check-input" type="radio" name="tagRadio_<?php echo $key; ?>" id="labelRadio_<?php echo $key; ?>_5" value="addressCountry" <?php echo ($updatetag[$key]=='addressCountry')?'checked':'' ?> >
                                                                                 <label class="form-check-label" for="labelRadio_<?php echo $key; ?>_5">
-                                                                                &lt;country&gt;
+                                                                                &lt;addressCountry&gt;
                                                                                 </label>
                                                                             </div>
                                                                             <div class="form-check">

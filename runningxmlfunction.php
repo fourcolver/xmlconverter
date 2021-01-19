@@ -19,6 +19,7 @@ if(count($getRunning) > 0) {
         $basetag = $value['basetag'];
         $updatetagpiece = explode(",", $updatetag);
         $basetagpiece = explode(",", $basetag);
+        $defaultcountry = $value['defaultcountry'];
         if($value['cdatatag'] != "") {
           $cdatatagpiece = explode(",", $value['cdatatag']);
         }
@@ -47,7 +48,7 @@ if(count($getRunning) > 0) {
     
             if($reader->nodeType == XMLReader::ELEMENT) $nodeName = $reader->name;
       
-            if($nodeName === "job" || $nodeName === "JOB" || $nodeName === "ad" || $nodeName == "item" || $nodeName == "vacancy") {
+            if($nodeName === "job" || $nodeName === "JOB" || $nodeName === "ad" || $nodeName == "item" || $nodeName == "vacancy" || $nodeName == "Job") {
       
               libxml_use_internal_errors(true);
               
@@ -84,7 +85,12 @@ if(count($getRunning) > 0) {
                     $i ++ ;
                   }
                 }
-    
+                if(!empty($defaultcountry)) {
+                  $xmlWriter->writeElement("addressCountry", $defaultcountry);
+                }
+                if(!empty($joblocationtype)) {
+                  $xmlWriter->writeElement("jobLocationType", $joblocationtype);
+                }
                 $xmlWriter->endElement();
               }
               
