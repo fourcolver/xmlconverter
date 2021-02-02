@@ -13,7 +13,10 @@
                 </li>
                 <li class="nav-item">
                     <a href="addurl.php" class="nav-link active"><i class="fas fa-plus-circle"></i> Add feeds to map</a>
-                </li>
+                </li>                
+                <li class="nav-item">
+                        <a href="filefeed.php" class="nav-link"><i class="fas fa-plus-circle"></i> Add file feed</a>
+                    </li>
                 <li class="nav-item">
                     <a href="managefeeds.php" class="nav-link"><i class="fas fa-pen"></i> Manage Feeds</a>
                 </li>

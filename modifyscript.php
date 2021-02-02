@@ -14,8 +14,8 @@ if(count($feedAll) > 0) {
 
     $updatetag = $value['updatetag'];
     $id = $value['id'];
-    if(strpos($updatetag, "country") !== false){
-      $willUpdateTag = str_replace("country","addressCountry",$updatetag);
+    if(strpos($updatetag, "contractType") !== false){
+      $willUpdateTag = str_replace("contractType","discard",$updatetag);
       $updateResult = $crud->modifyTag($willUpdateTag, $id);
       echo $updateResult;
     }

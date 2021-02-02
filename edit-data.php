@@ -23,10 +23,13 @@
                     <a class="nav-link" data-widget="pushmenu" href="#" role="button"><i class="fas fa-bars"></i></a>
                 </li>
                 <li class="nav-item">
-                    <a href="addurl.php" class="nav-link active"><i class="fas fa-plus-circle"></i> Add feeds to map</a>
+                    <a href="addurl.php" class="nav-link"><i class="fas fa-plus-circle"></i> Add feeds to map</a>
                 </li>
                 <li class="nav-item">
-                    <a href="managefeeds.php" class="nav-link"><i class="fas fa-pen"></i> Manage Feeds</a>
+                    <a href="filefeed.php" class="nav-link"><i class="fas fa-plus-circle"></i> Add file feed</a>
+                </li>
+                <li class="nav-item">
+                    <a href="managefeeds.php" class="nav-link active"><i class="fas fa-pen"></i> Manage Feeds</a>
                 </li>
             </ul>
         </nav>
@@ -212,14 +215,14 @@
                                                                                 &lt;city&gt;
                                                                                 </label>
                                                                             </div>
+                                                                        </div>
+                                                                        <div class="col-md">                                                                        
                                                                             <div class="form-check">
                                                                                 <input class="form-check-input" type="radio" name="tagRadio_<?php echo $key; ?>" id="labelRadio_<?php echo $key; ?>_26" value="city" <?php echo ($updatetag[$key]=='addressRegion')?'checked':'' ?> >
                                                                                 <label class="form-check-label" for="labelRadio_<?php echo $key; ?>_26">
                                                                                 &lt;addressRegion&gt;
                                                                                 </label>
                                                                             </div>
-                                                                        </div>
-                                                                        <div class="col-md">
                                                                             <div class="form-check">
                                                                                 <input class="form-check-input" type="radio" name="tagRadio_<?php echo $key; ?>" id="labelRadio_<?php echo $key; ?>_7" value="geonameId" <?php echo ($updatetag[$key]=='geonameId')?'checked':'' ?> >
                                                                                 <label class="form-check-label" for="labelRadio_<?php echo $key; ?>_7">
@@ -250,12 +253,6 @@
                                                                                 &lt;content&gt;
                                                                                 </label>
                                                                             </div>
-                                                                            <div class="form-check">
-                                                                                <input class="form-check-input" type="radio" name="tagRadio_<?php echo $key; ?>" id="labelRadio_<?php echo $key; ?>_12" value="datePosted" <?php echo ($updatetag[$key]=='datePosted')?'checked':'' ?> >
-                                                                                <label class="form-check-label" for="labelRadio_<?php echo $key; ?>_12">
-                                                                                &lt;datePosted&gt;
-                                                                                </label>
-                                                                            </div>
                                                                         </div>
                                                                         <div class="col-md">
                                                                             <div class="form-check">
@@ -264,12 +261,19 @@
                                                                                 &lt;url&gt;
                                                                                 </label>
                                                                             </div>
+                                                                            
                                                                             <div class="form-check">
+                                                                                <input class="form-check-input" type="radio" name="tagRadio_<?php echo $key; ?>" id="labelRadio_<?php echo $key; ?>_12" value="datePosted" <?php echo ($updatetag[$key]=='datePosted')?'checked':'' ?> >
+                                                                                <label class="form-check-label" for="labelRadio_<?php echo $key; ?>_12">
+                                                                                &lt;datePosted&gt;
+                                                                                </label>
+                                                                            </div>
+                                                                            <!-- <div class="form-check">
                                                                                 <input class="form-check-input" type="radio" name="tagRadio_<?php echo $key; ?>" id="labelRadio_<?php echo $key; ?>_15" value="contractType" <?php echo ($updatetag[$key]=='contractType')?'checked':'' ?> >
                                                                                 <label class="form-check-label" for="labelRadio_<?php echo $key; ?>_15">
                                                                                 &lt;contractType&gt;
                                                                                 </label>
-                                                                            </div>
+                                                                            </div> -->
                                                                             <div class="form-check">
                                                                                 <input class="form-check-input" type="radio" name="tagRadio_<?php echo $key; ?>" id="labelRadio_<?php echo $key; ?>_16" value="remotePolicy" <?php echo ($updatetag[$key]=='remotePolicy')?'checked':'' ?> >
                                                                                 <label class="form-check-label" for="labelRadio_<?php echo $key; ?>_16">

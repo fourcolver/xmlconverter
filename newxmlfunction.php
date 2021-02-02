@@ -4,12 +4,9 @@ include_once 'dbconfigcron.php';
 $feedAll = $crud->getAll();
 
 if(count($feedAll) > 0) {
-  
-  // $xml = new DOMDocument();
-  // $xml->formatOutput=true;  
-  // $xml_bebee = $xml->createElement("bebee");
-  // $xml->appendChild( $xml_bebee );
-  
+
+  $_SESSION['bigCron'] == "Valid";
+    
   foreach ($feedAll as $value) {
 
     $cdatatagpiece = [];
@@ -25,7 +22,15 @@ if(count($feedAll) > 0) {
 
     $reader = new XMLReader();
 
-    if($reader->open($value['url'])) {
+    $realHandleUrl = $value['url'];
+    if (strpos($realHandleUrl, '.zip') !== false || strpos($realHandleUrl, '.gz') !== false) {
+      $isReady = $crud->getIsReady($realHandleUrl);
+      if($isReady) {
+        $realHandleUrl = "tempzip/".$isReady['name'].'.xml';
+      }
+    }
+
+    if($reader->open($realHandleUrl)) {
 
       $key = 0;
 
@@ -113,6 +118,7 @@ if(count($feedAll) > 0) {
     }
   }
   echo "success";
+  unset($_SESSION['bigCron']);
 }
 
 ?>

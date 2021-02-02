@@ -3,112 +3,124 @@ include_once 'dbconfigcron.php';
 
 $getRunning = $crud->getRunningChecking();
 
-if(count($getRunning) > 0) {
+if(empty($_SESSION['bigCron'])) {
+  if(count($getRunning) > 0) {
 
-  $makingProgress = $crud->setCheckToProgress($getRunning);
-
-  if($makingProgress) {
-    $feedAll = $crud->getRunningItem($getRunning);
+    $makingProgress = $crud->setCheckToProgress($getRunning);
   
-    if(count($feedAll) > 0) {
+    if($makingProgress) {
+      $feedAll = $crud->getRunningItem($getRunning);
+    
+      if(count($feedAll) > 0) {
+        
+        foreach ($feedAll as $value) {
       
-      foreach ($feedAll as $value) {
-    
-        $cdatatagpiece = [];
-        $updatetag = $value['updatetag'];
-        $basetag = $value['basetag'];
-        $updatetagpiece = explode(",", $updatetag);
-        $basetagpiece = explode(",", $basetag);
-        $defaultcountry = $value['defaultcountry'];
-        if($value['cdatatag'] != "") {
-          $cdatatagpiece = explode(",", $value['cdatatag']);
-        }
-    
-        $reader = new XMLReader();
-    
-        if($reader->open($value['url'])) {
-    
-          $key = 0;
-    
-          $saveName = str_replace(" ", "_", strtolower($value['name'])).".xml";
-          $saveName = "xmldir/".$saveName;
-    
-          if (file_exists($saveName)) {
-            $deleted = unlink($saveName);
+          $cdatatagpiece = [];
+          $updatetag = $value['updatetag'];
+          $basetag = $value['basetag'];
+          $updatetagpiece = explode(",", $updatetag);
+          $basetagpiece = explode(",", $basetag);
+          $defaultcountry = $value['defaultcountry'];
+          $joblocationtype = $value['joblocationtype'];
+          if($value['cdatatag'] != "") {
+            $cdatatagpiece = explode(",", $value['cdatatag']);
           }
-    
-    
-          $xmlWriter = new XMLWriter();
-          $xmlWriter->openMemory();
-          $xmlWriter->startDocument('1.0', 'UTF-8');
-          $xmlWriter->setIndent(TRUE);
-          $xmlWriter->startElement('bebee');
-    
-          while($reader->read()) {
-    
-            if($reader->nodeType == XMLReader::ELEMENT) $nodeName = $reader->name;
       
-            if($nodeName === "job" || $nodeName === "JOB" || $nodeName === "ad" || $nodeName == "item" || $nodeName == "vacancy" || $nodeName == "Job") {
+          $reader = new XMLReader();
+
+          $realHandleUrl = $value['url'];
+          if (strpos($realHandleUrl, '.zip') !== false || strpos($realHandleUrl, '.gz') !== false) {
+            $isReady = $crud->getIsReady($realHandleUrl);
+            if($isReady) {
+              $realHandleUrl = "tempzip/".$isReady['name'].'.xml';
+            }
+          }
       
-              libxml_use_internal_errors(true);
-              
-              try{
-                  $node = new SimpleXMLElement($reader->readOuterXML());
-              } catch (Exception $e){
-                continue;
-              }
+          if($reader->open($realHandleUrl)) {
       
-              if(!empty($node)) {
+            $key = 0;
+      
+            $saveName = str_replace(" ", "_", strtolower($value['name'])).".xml";
+            $saveName = "xmldir/".$saveName;
+      
+            if (file_exists($saveName)) {
+              $deleted = unlink($saveName);
+            }
+      
+      
+            $xmlWriter = new XMLWriter();
+            $xmlWriter->openMemory();
+            $xmlWriter->startDocument('1.0', 'UTF-8');
+            $xmlWriter->setIndent(TRUE);
+            $xmlWriter->startElement('bebee');
+      
+            while($reader->read()) {
+      
+              if($reader->nodeType == XMLReader::ELEMENT) $nodeName = $reader->name;
+        
+              if($nodeName === "job" || $nodeName === "JOB" || $nodeName === "ad" || $nodeName == "item" || $nodeName == "vacancy" || $nodeName == "Job") {
+        
+                libxml_use_internal_errors(true);
                 
-                $xmlWriter->startElement('item');
-      
-                $i = 0;
-                foreach($node as $minikey => $minichild) {
-                  if(!empty($updatetagpiece[$i])) {
-                    if($updatetagpiece[$i] != "discard") {
-                      if($updatetagpiece[$i] != "Default") {
-                        $updatetagReal = $updatetagpiece[$i];
+                try{
+                    $node = new SimpleXMLElement($reader->readOuterXML());
+                } catch (Exception $e){
+                  continue;
+                }
+        
+                if(!empty($node)) {
+                  
+                  $xmlWriter->startElement('item');
+        
+                  $i = 0;
+                  foreach($node as $minikey => $minichild) {
+                    if(!empty($updatetagpiece[$i])) {
+                      if($updatetagpiece[$i] != "discard") {
+                        if($updatetagpiece[$i] != "Default") {
+                          $updatetagReal = $updatetagpiece[$i];
+                        }
+                        else {
+                          $updatetagReal = $minichild->getName();
+                        }
+        
+                        if(in_array($minichild->getName(), $cdatatagpiece)) {
+                          $xmlWriter->startElement($updatetagReal);
+                            $xmlWriter->writeCdata(htmlspecialchars($minichild->__toString()));
+                          $xmlWriter->endElement();
+                        }
+                        else {
+                          $xmlWriter->writeElement($updatetagReal, htmlspecialchars($minichild->__toString()));
+                        }
                       }
-                      else {
-                        $updatetagReal = $minichild->getName();
-                      }
-      
-                      if(in_array($minichild->getName(), $cdatatagpiece)) {
-                        $xmlWriter->startElement($updatetagReal);
-                          $xmlWriter->writeCdata(htmlspecialchars($minichild->__toString()));
-                        $xmlWriter->endElement();
-                      }
-                      else {
-                        $xmlWriter->writeElement($updatetagReal, htmlspecialchars($minichild->__toString()));
-                      }
+                      $i ++ ;
                     }
-                    $i ++ ;
                   }
+                  if(!empty($defaultcountry)) {
+                    $xmlWriter->writeElement("addressCountry", $defaultcountry);
+                  }
+                  if(!empty($joblocationtype)) {
+                    $xmlWriter->writeElement("jobLocationType", $joblocationtype);
+                  }
+                  $xmlWriter->endElement();
                 }
-                if(!empty($defaultcountry)) {
-                  $xmlWriter->writeElement("addressCountry", $defaultcountry);
-                }
-                if(!empty($joblocationtype)) {
-                  $xmlWriter->writeElement("jobLocationType", $joblocationtype);
-                }
-                $xmlWriter->endElement();
+                
               }
-              
+              $key ++ ;
+              if (0 == $key%1000) {
+                  file_put_contents($saveName, $xmlWriter->flush(true), FILE_APPEND);
+              }
+      
             }
-            $key ++ ;
-            if (0 == $key%1000) {
-                file_put_contents($saveName, $xmlWriter->flush(true), FILE_APPEND);
-            }
-    
+            $xmlWriter->endElement();
+            file_put_contents($saveName, $xmlWriter->flush(true), FILE_APPEND);
           }
-          $xmlWriter->endElement();
-          file_put_contents($saveName, $xmlWriter->flush(true), FILE_APPEND);
+          $deleteResult = $crud->deleteChecking($value['id']);
         }
-        $deleteResult = $crud->deleteChecking($value['id']);
+        echo "success";
       }
-      echo "success";
     }
   }
 }
+
 
 ?>

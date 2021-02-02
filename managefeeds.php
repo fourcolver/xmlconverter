@@ -13,6 +13,9 @@
                     </li>
                     <li class="nav-item">
                         <a href="index.php" class="nav-link"><i class="fas fa-plus-circle"></i> Add feeds to map</a>
+                    </li>                    
+                    <li class="nav-item">
+                        <a href="filefeed.php" class="nav-link"><i class="fas fa-plus-circle"></i> Add file feed</a>
                     </li>
                     <li class="nav-item">
                         <a href="managefeeds.php" class="nav-link  active"><i class="fas fa-pen"></i> Manage Feeds</a>
@@ -67,21 +70,7 @@
                         <div class="row">
                             <div class="col-lg-12">
                                 <div class="card mt-3">
-                                    <!-- <div class="card-header">
-                                        <form>
-                                            <div class="row">
-                                                <div class="col-lg-10 col-sm-9 mt-2 mb-2">
-                                                    <input type="text" class="form-control form-control-lg" placeholder="Search by url or keyword">
-                                                </div>
-                                                <div class="col-lg-2  col-sm-3 mt-2 mb-2">
-                                                    <button class="btn btn-primary btn-lg btn-block" type="submit">
-                                                    <i class="fas fa-search mr-1"></i>
-                                                    Search
-                                                    <span class="spinner-grow ml-1" role="status" aria-hidden="true"></span></button>
-                                                </div>
-                                            </div>
-                                        </form>
-                                    </div> -->
+
                                     <div class="card-body padding-body">
                                         <div class="d-flex align-items-center mt-2 ml-4 mb-2 mr-4">
                                             <!-- <button type="button" class="btn btn-default btn-sm checkbox-toggle mr-1"><i class="far fa-square"></i>
@@ -150,22 +139,7 @@
                                                         $crud->dataview("SELECT * FROM feedinfo");
                                                     }
                                                     ?>    
-                                                </tbody>
-                                                <!-- <tr>
-                                                    <td class="mw-30">
-                                                        <div class="icheck-primary">
-                                                            <input type="checkbox" value="" id="check1">
-                                                            <label for="check1"></label>
-                                                        </div>
-                                                    </td>
-                                                    <td><a target="_blank" href="#">www.bebee.com/jobs</a></td>
-                                                    <td><i class="far fa-calendar-alt mr-1"></i> 5 mins ago</td>
-                                                    <td align="right">
-                                                        <button type="button" class="btn btn-default btn-sm mr-1"><i class="far fa-trash-alt"></i></button>
-                                                        <button type="button" class="btn btn-default btn-sm mr-1"><i class="fas fa-pen"></i></button>
-                                                    </td>
-                                                </tr> -->
-                                                
+                                                </tbody>                                                
                                             </table>
                                             <!-- /.table -->
                                             <div class="p-5 text-center">

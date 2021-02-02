@@ -166,6 +166,65 @@ $("#willLocationCheck").click(function(){
     $("#jobLocationType").toggle(200);
 })
 
+//download file xml and extract it
+$("#downloadxml").click(function(){
+    let xmlurl = $("#xmlurl").val();
+    if(xmlurl.indexOf(".zip") != -1 || xmlurl.indexOf(".gz") != -1){
+        if(xmlurl == "") {
+            alert("Please enter the xmlURL");
+        }
+        else {
+            $(".filexmlarea").LoadingOverlay("show", {
+                background  : "rgba(165, 190, 100, 0.5)"
+            });
+            $.ajax({
+                url: "parsexml.php",
+                type: "post",
+                dataType: "json",
+                data: {"downloadfile": "valid", "xmlurl": xmlurl},
+                success: function(result) {
+                    $(".filexmlarea").LoadingOverlay("hide", true);
+                    if(result.data == "true") {
+                        $("#confirmModal").modal('toggle');
+                    }
+                    else if(result.data == "warning") {
+                        alert('This is already in progress');
+                    }
+                    else {
+                        alert("Something went wrong while processing");
+                    }
+                }
+            })
+        }
+    }
+    else {
+        alert("Please check the xml url is for zip or gz");
+    }
+})
+
+// remove xml file information in modal
+$(".removeFileInfo").click(function(){
+    let data_id = $("#removeId").val();
+    $.ajax({
+        url: "parsexml.php",
+        type: "post",
+        dataType: "json",
+        data: {"removeFile": "valid", "data_id": data_id},
+        success: function(result) {
+            console.log(result);
+            if(result) {
+                location.reload();
+            }
+        }
+    })
+})
+
+// remove xml file information
+$(document).on('click', '.removeFile', function() {
+    let data_id = $(this).attr("date-id");
+    $("#removeId").val(data_id);
+})
+
 $(document).ready(function() {
     $('#feedinfo').DataTable({
          "aoColumns": [
@@ -191,6 +250,18 @@ $(document).ready(function() {
     });
 } );
 
+
+$(document).ready(function() {
+    $('#fileinfo').DataTable({
+        "aoColumns": [
+            null,
+            null,
+            null,
+            { "bSortable": false }
+         ],
+    });
+} );
+
 $("#parseXML").click(function(){
 
     let xmlurl = $("#xmlurl").val()
@@ -213,6 +284,9 @@ $("#parseXML").click(function(){
                 $(".container-fluid").LoadingOverlay("hide", true);
                 if(result == false) {
                     alert("Please Check the job xml url");
+                }
+                if(result.data == "false") {
+                    alert("This is Zip and gz file url, Please go 'Add file feed' and download file first.");
                 }
                 else {
                     let mainString = '';
@@ -279,14 +353,14 @@ $("#parseXML").click(function(){
                                                     &lt;city&gt;
                                                     </label>
                                                 </div>
+                                            </div>
+                                            <div class="col-md">                                            
                                                 <div class="form-check">
                                                     <input class="form-check-input" type="radio" name="tagRadio_${i}" id="labelRadio_${i}_26" value="addressRegion">
                                                     <label class="form-check-label" for="labelRadio_${i}_26">
                                                     &lt;addressRegion&gt;
                                                     </label>
                                                 </div>
-                                            </div>
-                                            <div class="col-md">
                                                 <div class="form-check">
                                                     <input class="form-check-input" type="radio" name="tagRadio_${i}" id="labelRadio_${i}_7" value="geonameId">
                                                     <label class="form-check-label" for="labelRadio_${i}_7">
@@ -317,12 +391,6 @@ $("#parseXML").click(function(){
                                                     &lt;content&gt;
                                                     </label>
                                                 </div>
-                                                <div class="form-check">
-                                                    <input class="form-check-input" type="radio" name="tagRadio_${i}" id="labelRadio_${i}_12" value="datePosted">
-                                                    <label class="form-check-label" for="labelRadio_${i}_12">
-                                                    &lt;datePosted&gt;
-                                                    </label>
-                                                </div>
                                             </div>
                                             <div class="col-md">
                                                 <div class="form-check">
@@ -330,11 +398,11 @@ $("#parseXML").click(function(){
                                                     <label class="form-check-label" for="labelRadio_${i}_14">
                                                     &lt;url&gt;
                                                     </label>
-                                                </div>
+                                                </div>                                                
                                                 <div class="form-check">
-                                                    <input class="form-check-input" type="radio" name="tagRadio_${i}" id="labelRadio_${i}_15" value="contractType">
-                                                    <label class="form-check-label" for="labelRadio_${i}_15">
-                                                    &lt;contractType&gt;
+                                                    <input class="form-check-input" type="radio" name="tagRadio_${i}" id="labelRadio_${i}_12" value="datePosted">
+                                                    <label class="form-check-label" for="labelRadio_${i}_12">
+                                                    &lt;datePosted&gt;
                                                     </label>
                                                 </div>
                                                 <div class="form-check">

@@ -90,6 +90,7 @@ class crud
 		return true;
 	}
 
+	//initial xml making
 	public function createRunning($id) {
 		$is_stmt = $this->db->prepare("SELECT * FROM running WHERE feedid=:feedid");
 		$is_stmt->bindparam(":feedid",$id);
@@ -115,7 +116,157 @@ class crud
 				return false;
 			}
 		}
-		
+	}
+
+	//Generate random string
+	public function generateRandomString($length = 8) {
+			$characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+			$charactersLength = strlen($characters);
+			$randomString = '';
+			for ($i = 0; $i < $length; $i++) {
+					$randomString .= $characters[rand(0, $charactersLength - 1)];
+			}
+			return $randomString;
+	}
+
+	// save downloadfile information
+	public function createDownloading($url) {
+		$is_stmt = $this->db->prepare("SELECT * FROM filexml WHERE inputurl=:url");
+		$is_stmt->bindparam(":url",$url);
+		$is_stmt->execute();
+		if($is_stmt->rowCount() > 0) {
+			return "warning";
+		}
+		else {
+			try
+			{
+				$name = $this->generateRandomString(8);
+				$status = "Downloading";
+				$stmt = $this->db->prepare(
+					"INSERT INTO filexml(inputurl, name, status)
+							VALUES(:inputurl, :name, :status)");
+				$stmt->bindparam(":inputurl",$url);
+				$stmt->bindparam(":name",$name);
+				$stmt->bindparam(":status",$status);
+				$stmt->execute();
+				return $name;
+			}
+			catch(PDOException $e)
+			{
+				echo $e->getMessage();	
+				return false;
+			}
+		}
+	}
+
+	// Get download file information
+	public function getDownloading() {
+		$runningList = [];
+		$downloadingId = [];
+		$status = "Downloading";
+		$stmt = $this->db->prepare("SELECT * FROM filexml WHERE status=:status");
+		$stmt->bindparam(":status", $status);
+		$stmt->execute();
+		while($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+			$runningList[] = $row;
+			$downloadingId[] = $row['id'];
+		}
+		$result = ['runningList' => $runningList, 'downloadingId' => $downloadingId];
+		return $result;
+	}
+
+	//remove downloadfile information
+	public function deleteFile($id)
+	{
+		$stmt = $this->db->prepare("DELETE FROM filexml WHERE id=:id");
+		$stmt->bindparam(":id",$id);
+		$stmt->execute();
+		return true;
+	}
+
+	// download to ready status change
+	public function setDownToReady($id) {
+		try{
+			$status = "Ready";
+			$stmt = $this->db->prepare("UPDATE filexml SET status=:status
+																	WHERE id=:id");
+			$stmt->bindparam(":status",$status);
+			$stmt->bindparam(":id",$id);
+			$stmt->execute();
+			return true;
+		}
+		catch(PDOException $e)
+		{
+			echo $e->getMessage();	
+			return false;
+		}
+	}
+
+	// download to ready status change
+	public function setDownToError($id) {
+		try{
+			$status = "Error";
+			$stmt = $this->db->prepare("UPDATE filexml SET status=:status
+																	WHERE id=:id");
+			$stmt->bindparam(":status",$status);
+			$stmt->bindparam(":id",$id);
+			$stmt->execute();
+			return true;
+		}
+		catch(PDOException $e)
+		{
+			echo $e->getMessage();	
+			return false;
+		}
+	}
+
+	// download to ready status change
+	public function setDownToDownloading($id) {
+		try{
+			$status = "Downloading";
+			$stmt = $this->db->prepare("UPDATE filexml SET status=:status
+																	WHERE id=:id");
+			$stmt->bindparam(":status",$status);
+			$stmt->bindparam(":id",$id);
+			$stmt->execute();
+			return true;
+		}
+		catch(PDOException $e)
+		{
+			echo $e->getMessage();	
+			return false;
+		}
+	}
+
+	// get row with inputurl
+	public function getIsReady($url) {
+		$status = "Ready";
+		$stmt = $this->db->prepare("SELECT * FROM filexml WHERE status=:status AND inputurl=:url");
+		$stmt->bindparam(":status", $status);
+		$stmt->bindparam(":url", $url);
+		$stmt->execute();
+		if($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+			return $row;
+		}
+		else {
+			return false;
+		}
+	}
+
+	// Set download to Progress
+	public function setDownToProgress($idList) {
+		try{
+			$in  = str_repeat('?,', count($idList) - 1) . '?';
+			$stmt = $this->db->prepare("UPDATE filexml SET status='Progressing'
+																	WHERE id IN ($in)");
+			$stmt->execute($idList);
+			return true;
+		}
+		catch(PDOException $e)
+		{
+			echo $e->getMessage();	
+			return false;
+		}
 	}
 
 	public function getRunning() {
@@ -194,11 +345,42 @@ class crud
 			return false;
 		}
 	}
+
+	public function dataFileView($query) {
+		$stmt = $this->db->prepare($query);
+		$stmt->execute();
+		if($stmt->rowCount() > 0)
+		{
+			$returnString = "";
+
+			while($row=$stmt->fetch(PDO::FETCH_ASSOC))
+			{
+				if($row['status'] == "Downloading") {
+					$class = "text-green";
+				}
+				else if($row['status'] == "Ready" || $row['status'] == "Progressing") {
+					$class = "text-blue";
+				}
+				else {
+					$class = "text-red";
+				}
+				$returnString .= "
+					<tr>
+						<td>".$row['name']."</td>
+						<td>".$row['inputurl']."</td>
+						<td class='".$class."'>".$row['status']."</td>
+						<td><a href='#' date-id='".$row['id']."' class='btn btn-default btn-sm mr-1 removeFile'  data-toggle='modal' data-target='#removeModal'><i class='far fa-trash-alt'></i></a></td>
+					</tr>
+				";
+			}
+			return $returnString;
+		}
+	}
 		
 	public function dataview($query)
 	{
 		$runningInfo = $this->getRunning();
-		$main_url = "http://3.140.137.253/cf/xmldir/";
+		$main_url = "https://converter.bebee.com/cf/xmldir/";
 		$stmt = $this->db->prepare($query);
 		$stmt->execute();
 		if($stmt->rowCount() > 0)
